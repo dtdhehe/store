@@ -1,6 +1,8 @@
 package com.example.store.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.store.entity.Supplier;
 import com.example.store.service.SupplierService;
 import com.example.store.util.ConstantUtils;
@@ -9,6 +11,10 @@ import com.example.store.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author 罗蕾
@@ -68,6 +74,23 @@ public class SupplierController {
         Supplier supplier = supplierService.getById(id);
         supplier.setValidFlag(ConstantUtils.NOTACTIVE);
         return supplierService.saveOrUpdate(supplier)?ResultUtils.success("删除供货商成功"):ResultUtils.failed("删除失败");
+    }
+
+    /**
+     * 查询供货商列表
+     * @param queryMap
+     * @return
+     */
+    @GetMapping("/querySupplierList")
+    public ResultVO querySupplierList(@RequestParam Map<String,Object> queryMap){
+        QueryWrapper<Supplier> queryWrapper = new QueryWrapper<>();
+        IPage<Supplier> supplierIPage = new Page<>( Long.valueOf((String) queryMap.get("page")),Long.valueOf((String) queryMap.get("size")));
+        supplierIPage = supplierService.page(supplierIPage,queryWrapper);
+        Map<String,Object> resultMap = new HashMap<>(8);
+        resultMap.put("rows",supplierIPage.getRecords());
+        resultMap.put("pages",supplierIPage.getPages());
+        resultMap.put("total",supplierIPage.getTotal());
+        return ResultUtils.success("查询成功",resultMap);
     }
 
 }
