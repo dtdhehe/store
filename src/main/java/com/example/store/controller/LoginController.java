@@ -42,8 +42,8 @@ public class LoginController {
     }
 
     @RequestMapping("/")
-    public String unLogin(){
-        return "unLogin";
+    public ResultVO unLogin(){
+        return ResultUtils.failed("unLogin");
     }
 
     /**

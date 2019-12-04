@@ -85,6 +85,10 @@ public class SupplierController {
     public ResultVO querySupplierList(@RequestParam Map<String,Object> queryMap){
         QueryWrapper<Supplier> queryWrapper = new QueryWrapper<>();
         IPage<Supplier> supplierIPage = new Page<>( Long.valueOf((String) queryMap.get("page")),Long.valueOf((String) queryMap.get("size")));
+        if (!StringUtils.isEmpty(queryMap.get("supplierName"))){
+            //供货商名称
+            queryWrapper.like("supplier_name",queryMap.get("supplierName"));
+        }
         supplierIPage = supplierService.page(supplierIPage,queryWrapper);
         Map<String,Object> resultMap = new HashMap<>(8);
         resultMap.put("rows",supplierIPage.getRecords());
