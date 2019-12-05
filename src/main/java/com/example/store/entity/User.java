@@ -33,5 +33,8 @@ public class User {
 
     private String status;
 
+    private String userType;
+
     private BigDecimal shoppingPoints;
+
 }

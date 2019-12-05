@@ -1,8 +1,6 @@
 package com.example.store.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.store.entity.User;
-import com.example.store.service.UserService;
 import com.example.store.util.ResultUtils;
 import com.example.store.vo.ResultVO;
 import io.swagger.annotations.Api;
@@ -12,7 +10,6 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -25,20 +22,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/")
 public class LoginController {
-
-    @Autowired
-    private UserService userService;
-
-    @PostMapping("/user")
-    public ResultVO save(User user){
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_name",user.getUserName());
-        User dbUser = userService.getOne(queryWrapper);
-        if (dbUser != null){
-            return ResultUtils.failed("该用户名已被使用");
-        }
-        return userService.saveOrUpdate(user)?ResultUtils.success("新增用户成功"):ResultUtils.failed("新增失败");
-    }
 
     @GetMapping("/")
     public ResultVO unLogin(){

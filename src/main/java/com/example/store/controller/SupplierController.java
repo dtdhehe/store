@@ -53,13 +53,13 @@ public class SupplierController {
      * @param supplier
      * @return
      */
-    @PostMapping("/updateSupplier")
-    public ResultVO updateSupplier(@RequestBody Supplier supplier){
+    @PutMapping("/updateSupplier/{id}")
+    public ResultVO updateSupplier(@RequestBody Supplier supplier,@PathVariable String id){
         QueryWrapper<Supplier> wrapper = new QueryWrapper<>();
         wrapper.eq("valid_flag",ConstantUtils.ACTIVE);
         wrapper.eq("supplier_num",supplier.getSupplierNum());
         Supplier dbSupplier = supplierService.getOne(wrapper);
-        if (dbSupplier != null && !dbSupplier.getId().equals(supplier.getId())){
+        if (dbSupplier != null && !dbSupplier.getId().equals(id)){
             return ResultUtils.failed("该供货商编号已存在");
         }
         return supplierService.saveOrUpdate(supplier)?ResultUtils.success("更新供货商成功"):ResultUtils.failed("更新失败");
@@ -70,14 +70,28 @@ public class SupplierController {
      * @param id
      * @return
      */
-    @PostMapping("/deleteSupplier")
-    public ResultVO deleteSupplier(String id){
+    @DeleteMapping("/deleteSupplier/{id}")
+    public ResultVO deleteSupplier(@PathVariable String id){
         if (StringUtils.isEmpty(id)){
             return ResultUtils.failed("传入的id不能为空");
         }
         Supplier supplier = supplierService.getById(id);
         supplier.setValidFlag(ConstantUtils.NOTACTIVE);
         return supplierService.saveOrUpdate(supplier)?ResultUtils.success("删除供货商成功"):ResultUtils.failed("删除失败");
+    }
+
+    /**
+     * 根据id获得供货商
+     * @param id
+     * @return
+     */
+    @GetMapping("/getSupplier/{id}")
+    public ResultVO getSupplier(@PathVariable("id") String id){
+        if (StringUtils.isEmpty(id)){
+            return ResultUtils.failed("传入的id不能为空");
+        }
+        Supplier supplier = supplierService.getById(id);
+        return ResultUtils.success("查询成功",supplier);
     }
 
     /**
@@ -89,6 +103,7 @@ public class SupplierController {
     public ResultVO querySupplierList(@RequestParam Map<String,Object> queryMap){
         QueryWrapper<Supplier> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("valid_flag",ConstantUtils.ACTIVE);
+        queryWrapper.orderByDesc("create_time");
         IPage<Supplier> supplierIPage = new Page<>( Long.valueOf((String) queryMap.get("page")),Long.valueOf((String) queryMap.get("size")));
         if (!StringUtils.isEmpty(queryMap.get("supplierName"))){
             //供货商名称
