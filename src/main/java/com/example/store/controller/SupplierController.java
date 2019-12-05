@@ -8,6 +8,7 @@ import com.example.store.service.SupplierService;
 import com.example.store.util.ConstantUtils;
 import com.example.store.util.ResultUtils;
 import com.example.store.vo.ResultVO;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import java.util.Map;
  * @date 2019/11/3 17:28
  * @description
  **/
+@Api(tags = "供货商")
 @RestController
 @RequestMapping("/supplier")
 public class SupplierController {

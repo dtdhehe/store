@@ -3,6 +3,7 @@ package com.example.store.controller;
 import com.example.store.util.ResultUtils;
 import com.example.store.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +20,7 @@ import java.util.List;
 public class TestController {
 
 
-    @RequestMapping("/test")
+    @GetMapping("/test")
     public ResultVO test(){
         return ResultUtils.success("test");
     }

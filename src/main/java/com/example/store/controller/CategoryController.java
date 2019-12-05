@@ -8,6 +8,7 @@ import com.example.store.service.CategoryService;
 import com.example.store.util.ConstantUtils;
 import com.example.store.util.ResultUtils;
 import com.example.store.vo.ResultVO;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import java.util.Map;
  * @date 2019/11/4 22:03
  * @description
  **/
+@Api(tags = "商品类别")
 @RestController
 @RequestMapping("/category")
 public class CategoryController {

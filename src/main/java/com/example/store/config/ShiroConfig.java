@@ -36,6 +36,12 @@ public class ShiroConfig {
            ssl:表示安全的url请求，协议为https
            user:当登入操作时不做检查*/
         Map<String,String> map = new LinkedHashMap<>();
+        //-------swagger接口权限 开放-------
+        map.put("/swagger-ui.html","anon");
+        map.put("/webjars/**", "anon");
+        map.put("/v2/**", "anon");
+        map.put("/swagger-resources/**", "anon");
+        //-------swagger接口权限 开放-------
         map.put("/user","anon");
         map.put("/login","anon");
         map.put("/logout","logout");

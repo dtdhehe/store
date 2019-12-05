@@ -12,6 +12,7 @@ import com.example.store.vo.ResultVO;
 public class ResultUtils {
     private static final Integer SUCCESS = 200;
     private static final Integer FAILED = 500;
+    private static final Integer UNAUTH = 401;
 
     /**
      * 返回成功，带消息及数据
@@ -52,6 +53,18 @@ public class ResultUtils {
     public static ResultVO failed(String msg){
         ResultVO resultVO = new ResultVO();
         resultVO.setCode(FAILED);
+        resultVO.setMsg(msg);
+        return resultVO;
+    }
+
+    /**
+     * 没有权限
+     * @param msg
+     * @return
+     */
+    public static ResultVO unauth(String msg){
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(UNAUTH);
         resultVO.setMsg(msg);
         return resultVO;
     }

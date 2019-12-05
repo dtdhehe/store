@@ -5,6 +5,7 @@ import com.example.store.entity.User;
 import com.example.store.service.UserService;
 import com.example.store.util.ResultUtils;
 import com.example.store.vo.ResultVO;
+import io.swagger.annotations.Api;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -12,10 +13,7 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author 罗蕾
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2019/11/2 16:35
  * @description
  **/
+@Api(tags = "登录")
 @RestController
 @RequestMapping("/")
 public class LoginController {
@@ -41,9 +40,9 @@ public class LoginController {
         return userService.saveOrUpdate(user)?ResultUtils.success("新增用户成功"):ResultUtils.failed("新增失败");
     }
 
-    @RequestMapping("/")
+    @GetMapping("/")
     public ResultVO unLogin(){
-        return ResultUtils.failed("unLogin");
+        return ResultUtils.unauth("unLogin");
     }
 
     /**
