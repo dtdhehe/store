@@ -39,6 +39,7 @@ public class SupplierController {
     @PostMapping("/addSupplier")
     public ResultVO addSupplier(@RequestBody Supplier supplier){
         QueryWrapper<Supplier> wrapper = new QueryWrapper<>();
+        wrapper.eq("valid_flag",ConstantUtils.ACTIVE);
         wrapper.eq("supplier_num",supplier.getSupplierNum());
         Supplier dbSupplier = supplierService.getOne(wrapper);
         if (dbSupplier != null){
@@ -55,6 +56,7 @@ public class SupplierController {
     @PostMapping("/updateSupplier")
     public ResultVO updateSupplier(@RequestBody Supplier supplier){
         QueryWrapper<Supplier> wrapper = new QueryWrapper<>();
+        wrapper.eq("valid_flag",ConstantUtils.ACTIVE);
         wrapper.eq("supplier_num",supplier.getSupplierNum());
         Supplier dbSupplier = supplierService.getOne(wrapper);
         if (dbSupplier != null && !dbSupplier.getId().equals(supplier.getId())){
@@ -86,6 +88,7 @@ public class SupplierController {
     @GetMapping("/querySupplierList")
     public ResultVO querySupplierList(@RequestParam Map<String,Object> queryMap){
         QueryWrapper<Supplier> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("valid_flag",ConstantUtils.ACTIVE);
         IPage<Supplier> supplierIPage = new Page<>( Long.valueOf((String) queryMap.get("page")),Long.valueOf((String) queryMap.get("size")));
         if (!StringUtils.isEmpty(queryMap.get("supplierName"))){
             //供货商名称
