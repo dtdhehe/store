@@ -61,9 +61,6 @@ public class UserController {
             if (dbUser != null){
                 return ResultUtils.failed("该会员已添加过，请勿重复添加");
             }
-            //默认购物份数
-            user.setShoppingPoints(BigDecimal.TEN);
-            user.setStatus(ConstantUtils.ACTIVE);
         }
         return userService.saveOrUpdate(user)?ResultUtils.success("新增用户成功"):ResultUtils.failed("新增失败");
     }
@@ -153,6 +150,10 @@ public class UserController {
         if (!StringUtils.isEmpty(queryMap.get("name"))){
             //会员名字
             queryWrapper.like("name",queryMap.get("name"));
+        }
+        if (!StringUtils.isEmpty(queryMap.get("phone"))){
+            //会员电话
+            queryWrapper.like("phone",queryMap.get("phone"));
         }
         iPage = userService.queryCustomerList(iPage,queryWrapper);
         Map<String,Object> resultMap = new HashMap<>(8);
