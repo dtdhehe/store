@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author 罗蕾
@@ -40,7 +38,7 @@ public class CategoryController {
     public ResultVO addCategory(@RequestBody Category category){
         QueryWrapper<Category> wrapper = new QueryWrapper<>();
         wrapper.eq("valid_flag",ConstantUtils.ACTIVE);
-        if (StringUtils.isEmpty(category.getCategoryPcode())){
+        if (!StringUtils.isEmpty(category.getCategoryPcode())){
             //父编码不为空，则为新增二级类别
             wrapper.eq("category_pcode",category.getCategoryPcode());
             wrapper.orderByDesc("category_code");
@@ -71,7 +69,7 @@ public class CategoryController {
                 category.setCategoryCode(currCode);
             }
         }
-        return categoryService.save(category)?ResultUtils.success("新增类别成功"):ResultUtils.failed("新增失败");
+        return categoryService.save(category)?ResultUtils.success("新增类别成功",category.getCategoryCode()):ResultUtils.failed("新增失败");
     }
 
     /**
@@ -79,7 +77,7 @@ public class CategoryController {
      * @param category
      * @return
      */
-    @PostMapping("/updateCategory")
+    @PutMapping("/updateCategory/{id}")
     public ResultVO updateCategory(@RequestBody Category category){
         if (StringUtils.isEmpty(category.getId())){
             return ResultUtils.failed("传入的id不能为空");
@@ -92,8 +90,8 @@ public class CategoryController {
      * @param id
      * @return
      */
-    @PostMapping("/deleteCategory")
-    public ResultVO deleteCategory(String id){
+    @DeleteMapping("/deleteCategory/{id}")
+    public ResultVO deleteCategory(@PathVariable String id){
         if (StringUtils.isEmpty(id)){
             return ResultUtils.failed("传入的id不能为空");
         }
@@ -109,18 +107,38 @@ public class CategoryController {
      */
     @GetMapping("/queryCategoryList")
     public ResultVO queryCategoryList(@RequestParam Map<String,Object> queryMap){
+        List<Map<String,Object>> resultList = new ArrayList<>();
         QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
-        IPage<Category> iPage = new Page<>( Long.valueOf((String) queryMap.get("page")),Long.valueOf((String) queryMap.get("size")));
-        if (!StringUtils.isEmpty(queryMap.get("supplierName"))){
-            //供货商名称
-            queryWrapper.like("supplier_name",queryMap.get("supplierName"));
+        queryWrapper.eq("valid_flag",ConstantUtils.ACTIVE);
+        queryWrapper.orderByAsc("category_code");
+        List<Category> categoryList = categoryService.list(queryWrapper);
+        for (Category item : categoryList){
+            if (item.getCategoryCode().length() > 2){
+                //二级类别
+                Optional<Map<String, Object>> optional = resultList.stream().filter(e -> e.get("categoryCode").equals(item.getCategoryPcode())).findFirst();
+                if (optional.isPresent()){
+                    Map<String, Object> parentMap = optional.get();
+                    Map<String,Object> map = new HashMap<>(8);
+                    map.put("id",item.getId());
+                    map.put("categoryName",item.getCategoryName());
+                    map.put("categoryDesc",item.getCategoryDesc());
+                    map.put("categoryCode",item.getCategoryCode());
+                    map.put("categoryPcode",item.getCategoryPcode());
+                    ((List)parentMap.get("children")).add(map);
+                }
+            }else {
+                //一级类别
+                Map<String,Object> map = new HashMap<>(8);
+                map.put("id",item.getId());
+                map.put("categoryName",item.getCategoryName());
+                map.put("categoryDesc",item.getCategoryDesc());
+                map.put("categoryCode",item.getCategoryCode());
+                List<Map<String,Object>> childrenList = new ArrayList<>();
+                map.put("children",childrenList);
+                resultList.add(map);
+            }
         }
-        iPage = categoryService.page(iPage,queryWrapper);
-        Map<String,Object> resultMap = new HashMap<>(8);
-        resultMap.put("rows",iPage.getRecords());
-        resultMap.put("pages",iPage.getPages());
-        resultMap.put("total",iPage.getTotal());
-        return ResultUtils.success("查询成功",resultMap);
+        return ResultUtils.success("查询成功",resultList);
     }
 
 }

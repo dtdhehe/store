@@ -11,12 +11,11 @@ import java.math.BigDecimal;
 /**
  * @author 罗蕾
  * @version 1.0.0
- * @date 2019/11/2 16:13
+ * @date 2019/11/7 17:42
  * @description
  **/
 @Data
-public class User {
-
+public class Level {
     @TableId(type = IdType.UUID)
     private String id;
     @TableField(fill = FieldFill.INSERT)
@@ -26,21 +25,7 @@ public class User {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateTime;
 
-    private String userName;
-
-    private String password;
-
-    private String name;
-
-    private String phone;
-
-    private String sex;
-
-    private String status;
-
-    private String userType;
-
-    private BigDecimal shoppingPoints;
-    @TableField(exist = false)
     private String levelName;
+
+    private BigDecimal levelPoint;
 }
