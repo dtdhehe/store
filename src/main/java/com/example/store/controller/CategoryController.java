@@ -101,6 +101,20 @@ public class CategoryController {
     }
 
     /**
+     * 根据id获得商品类别
+     * @param id
+     * @return
+     */
+    @GetMapping("/getCategory/{id}")
+    public ResultVO getCategory(@PathVariable("id") String id){
+        if (StringUtils.isEmpty(id)){
+            return ResultUtils.failed("传入的id不能为空");
+        }
+        Category category = categoryService.getById(id);
+        return ResultUtils.success("查询成功",category);
+    }
+
+    /**
      * 查询供货商列表
      * @param queryMap
      * @return
