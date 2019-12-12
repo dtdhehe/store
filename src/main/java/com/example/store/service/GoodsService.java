@@ -1,5 +1,7 @@
 package com.example.store.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.store.entity.Goods;
 
@@ -10,4 +12,13 @@ import com.example.store.entity.Goods;
  * @description
  **/
 public interface GoodsService extends IService<Goods> {
+
+    /**
+     * 查询商品列表
+     * @param iPage
+     * @param wrapper
+     * @return
+     */
+    IPage<Goods> queryGoodsList(IPage<Goods> iPage, QueryWrapper<Goods> wrapper);
+
 }

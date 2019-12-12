@@ -26,7 +26,7 @@ public class Goods {
     private String updateTime;
 
     private String categoryId;
-
+    @TableField(exist = false)
     private String categoryName;
 
     private String goodsCode;
@@ -36,7 +36,7 @@ public class Goods {
     private String goodsUnit;
 
     private String supplierId;
-
+    @TableField(exist = false)
     private String supplierName;
 
     private BigDecimal goodsBid;

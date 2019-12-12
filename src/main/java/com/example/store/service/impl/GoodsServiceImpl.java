@@ -1,9 +1,12 @@
 package com.example.store.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.store.entity.Goods;
 import com.example.store.mapper.GoodsMapper;
 import com.example.store.service.GoodsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,4 +17,12 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public class GoodsServiceImpl extends ServiceImpl<GoodsMapper,Goods> implements GoodsService {
+
+    @Autowired
+    private GoodsMapper goodsMapper;
+
+    @Override
+    public IPage<Goods> queryGoodsList(IPage<Goods> iPage, QueryWrapper<Goods> wrapper) {
+        return goodsMapper.queryGoodsList(iPage,wrapper);
+    }
 }

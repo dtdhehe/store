@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.store.entity.Goods;
 import com.example.store.service.GoodsService;
+import com.example.store.util.CodeUtils;
 import com.example.store.util.ConstantUtils;
 import com.example.store.util.ResultUtils;
 import com.example.store.vo.ResultVO;
@@ -12,7 +13,12 @@ import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,19 +107,71 @@ public class GoodsController {
     @GetMapping("/queryGoodsList")
     public ResultVO queryGoodsList(@RequestParam Map<String,Object> queryMap){
         QueryWrapper<Goods> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("valid_flag",ConstantUtils.ACTIVE);
+        queryWrapper.eq("t.valid_flag",ConstantUtils.ACTIVE);
         queryWrapper.orderByDesc("create_time");
         IPage<Goods> iPage = new Page<>( Long.valueOf((String) queryMap.get("page")),Long.valueOf((String) queryMap.get("size")));
-        if (!StringUtils.isEmpty(queryMap.get("supplierName"))){
-            //供货商名称
-            queryWrapper.like("supplier_name",queryMap.get("supplierName"));
+        if (!StringUtils.isEmpty(queryMap.get("supplierId"))){
+            //供货商id
+            queryWrapper.eq("t.supplier_id",queryMap.get("supplierId"));
         }
-        iPage = goodsService.page(iPage,queryWrapper);
+        if (!StringUtils.isEmpty(queryMap.get("goodsName"))){
+            //商品名称
+            queryWrapper.like("t.goods_name",queryMap.get("goodsName"));
+        }
+        if (!StringUtils.isEmpty(queryMap.get("categoryId"))){
+            //商品类别id
+            queryWrapper.eq("t.category_id",queryMap.get("categoryId"));
+        }
+        iPage = goodsService.queryGoodsList(iPage,queryWrapper);
         Map<String,Object> resultMap = new HashMap<>(8);
         resultMap.put("rows",iPage.getRecords());
         resultMap.put("pages",iPage.getPages());
         resultMap.put("total",iPage.getTotal());
         return ResultUtils.success("查询成功",resultMap);
+    }
+
+    /**
+     * 根据上传图片返回编码
+     * @param file
+     * @return
+     */
+    @PostMapping("/getCodeByImg")
+    public ResultVO getCodeByImg(MultipartFile file){
+        String decode = "";
+        if (file.isEmpty()){
+            return ResultUtils.failed("上传图片为空");
+        }
+        try {
+            File toFile = null;
+            InputStream is = file.getInputStream();
+            toFile = new File(file.getOriginalFilename());
+            OutputStream os = new FileOutputStream(toFile);
+            int bytesRead = 0;
+            byte[] buffer = new byte[8192];
+            while ((bytesRead = is.read(buffer, 0, 8192)) != -1){
+                os.write(buffer, 0, bytesRead);
+            }
+            os.close();
+            is.close();
+            decode = CodeUtils.decode(toFile);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResultUtils.success("扫描成功",decode);
+    }
+
+    /**
+     * 生成10张条形码
+     */
+    @GetMapping("/code")
+    public void createCodeImg(@RequestParam("path")String path){
+        for (int i = 0;i<10;i++){
+            long num = (long)(Math.random() * (9999999999999L - 1000000000000L)) + 1000000000000L;
+            String msg = Long.toString(num);
+            int width = 105, height = 50;
+            String filePath = path + "\\" + msg + ".png";
+            CodeUtils.encode(msg, width, height, filePath);
+        }
     }
 
 }

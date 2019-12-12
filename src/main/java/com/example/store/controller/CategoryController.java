@@ -155,4 +155,22 @@ public class CategoryController {
         return ResultUtils.success("查询成功",resultList);
     }
 
+    /**
+     * 根据父类别code获得该类别下所有子类别
+     * @param code
+     * @return
+     */
+    @GetMapping("/getChildren/{code}")
+    public ResultVO getChildren(@PathVariable("code") String code){
+        if (StringUtils.isEmpty(code)){
+            return ResultUtils.failed("传入的父类别编码不能为空");
+        }
+        QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("valid_flag",ConstantUtils.ACTIVE);
+        queryWrapper.eq("category_pcode",code);
+        queryWrapper.orderByAsc("category_code");
+        List<Category> categoryList = categoryService.list(queryWrapper);
+        return ResultUtils.success("查询成功",categoryList);
+    }
+
 }
