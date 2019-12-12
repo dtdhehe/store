@@ -24,7 +24,7 @@ public interface GoodsMapper extends BaseMapper<Goods> {
      * @param wrapper
      * @return
      */
-    @Select("select t.*,c.category_name,s.supplier_name from goods t left join category c on c.id=t.category_id " +
+    @Select("select t.*,c.category_name,s.supplier_name from goods t left join category c on c.category_code=t.category_code " +
             "left join supplier s on s.id=t.supplier_id ${ew.customSqlSegment}")
     IPage<Goods> queryGoodsList(IPage<Goods> iPage, @Param(Constants.WRAPPER) Wrapper wrapper);
 

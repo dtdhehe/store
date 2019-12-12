@@ -79,7 +79,7 @@ public class GoodsController {
         wrapper.eq("valid_flag",ConstantUtils.ACTIVE);
         wrapper.eq("goods_code",goods.getGoodsCode());
         Goods dbGoods = goodsService.getOne(wrapper);
-        if (dbGoods != null){
+        if (dbGoods != null && !dbGoods.getId().equals(id)){
             return ResultUtils.failed("该商品已存在");
         }
         return goodsService.saveOrUpdate(goods)?ResultUtils.success("更新商品成功"):ResultUtils.failed("更新失败");
@@ -118,9 +118,9 @@ public class GoodsController {
             //商品名称
             queryWrapper.like("t.goods_name",queryMap.get("goodsName"));
         }
-        if (!StringUtils.isEmpty(queryMap.get("categoryId"))){
+        if (!StringUtils.isEmpty(queryMap.get("categoryCode"))){
             //商品类别id
-            queryWrapper.eq("t.category_id",queryMap.get("categoryId"));
+            queryWrapper.likeRight("t.category_code",queryMap.get("categoryCode"));
         }
         iPage = goodsService.queryGoodsList(iPage,queryWrapper);
         Map<String,Object> resultMap = new HashMap<>(8);
@@ -154,6 +154,9 @@ public class GoodsController {
             os.close();
             is.close();
             decode = CodeUtils.decode(toFile);
+            //会在项目文件夹下产生一个临时文件,删除图片
+            File delFile = new File(toFile.toURI());
+            delFile.delete();
         }catch (Exception e){
             e.printStackTrace();
         }

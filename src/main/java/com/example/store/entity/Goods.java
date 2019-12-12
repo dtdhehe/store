@@ -25,7 +25,7 @@ public class Goods {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateTime;
 
-    private String categoryId;
+    private String categoryCode;
     @TableField(exist = false)
     private String categoryName;
 
