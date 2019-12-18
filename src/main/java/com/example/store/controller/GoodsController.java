@@ -10,6 +10,7 @@ import com.example.store.util.ConstantUtils;
 import com.example.store.util.ResultUtils;
 import com.example.store.vo.ResultVO;
 import io.swagger.annotations.Api;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -108,7 +111,7 @@ public class GoodsController {
     public ResultVO queryGoodsList(@RequestParam Map<String,Object> queryMap){
         QueryWrapper<Goods> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("t.valid_flag",ConstantUtils.ACTIVE);
-        queryWrapper.orderByDesc("create_time");
+        queryWrapper.orderByDesc("t.create_time");
         IPage<Goods> iPage = new Page<>( Long.valueOf((String) queryMap.get("page")),Long.valueOf((String) queryMap.get("size")));
         if (!StringUtils.isEmpty(queryMap.get("supplierId"))){
             //供货商id
@@ -124,7 +127,11 @@ public class GoodsController {
         }
         iPage = goodsService.queryGoodsList(iPage,queryWrapper);
         Map<String,Object> resultMap = new HashMap<>(8);
-        resultMap.put("rows",iPage.getRecords());
+        List<Goods> recordList = iPage.getRecords();
+        for (Goods item : recordList){
+            item.setEdit(false);
+        }
+        resultMap.put("rows",recordList);
         resultMap.put("pages",iPage.getPages());
         resultMap.put("total",iPage.getTotal());
         return ResultUtils.success("查询成功",resultMap);
@@ -138,6 +145,7 @@ public class GoodsController {
     @PostMapping("/getCodeByImg")
     public ResultVO getCodeByImg(MultipartFile file){
         String decode = "";
+        Map<String,String> resultMap = new HashMap<>(16);
         if (file.isEmpty()){
             return ResultUtils.failed("上传图片为空");
         }
@@ -157,10 +165,24 @@ public class GoodsController {
             //会在项目文件夹下产生一个临时文件,删除图片
             File delFile = new File(toFile.toURI());
             delFile.delete();
+            //查询商品对象
+            if (StringUtils.isEmpty(decode)){
+                return ResultUtils.failed("扫描失败");
+            }
+            QueryWrapper<Goods> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("valid_flag",ConstantUtils.ACTIVE);
+            queryWrapper.eq("goods_code",decode);
+            Goods goods = goodsService.getOne(queryWrapper);
+            if (goods != null){
+                resultMap = BeanUtils.describe(goods);
+            }
+            resultMap.put("goodsCode",decode);
+            //默认数量为0和总额为商品单价
+            resultMap.put("soldNum","1");
         }catch (Exception e){
             e.printStackTrace();
         }
-        return ResultUtils.success("扫描成功",decode);
+        return ResultUtils.success("扫描成功",resultMap);
     }
 
     /**

@@ -28,4 +28,6 @@ public class Level {
     private String levelName;
 
     private BigDecimal levelPoint;
+
+    private BigDecimal discount;
 }

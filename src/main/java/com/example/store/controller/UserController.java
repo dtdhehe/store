@@ -163,4 +163,22 @@ public class UserController {
         return ResultUtils.success("查询成功",resultMap);
     }
 
+    @GetMapping("/{phone}")
+    public ResultVO getByPhone(@PathVariable("phone")String phone){
+        if (StringUtils.isEmpty(phone)){
+            return ResultUtils.failed("手机号不能为空");
+        }
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("valid_flag",ConstantUtils.ACTIVE);
+        queryWrapper.eq("user_type",ConstantUtils.CUSTOMER);
+        queryWrapper.eq("phone",phone);
+        IPage<User> iPage = new Page<>( 1,10);
+        iPage = userService.queryCustomerList(iPage,queryWrapper);
+        List<User> userList = iPage.getRecords();
+        if (userList.size() == 0 || ConstantUtils.NOTACTIVE.equals(userList.get(0).getStatus())){
+            return ResultUtils.failed("账户不存在或已冻结");
+        }
+        return ResultUtils.success("查询成功",userList.get(0));
+    }
+
 }

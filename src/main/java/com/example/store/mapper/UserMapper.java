@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.example.store.entity.User;
 import org.apache.ibatis.annotations.*;
 
+import java.math.BigDecimal;
+
 /**
  * @author 罗蕾
  * @version 1.0.0
@@ -28,7 +30,9 @@ public interface UserMapper extends BaseMapper<User> {
             @Result(property = "id",column = "id"),
             @Result(property = "shoppingPoints",column = "shopping_points"),
             @Result(property = "levelName",column = "shopping_points",
-                    one = @One(select = "com.example.store.mapper.LevelMapper.queryNameByPoints"))
+                    one = @One(select = "com.example.store.mapper.LevelMapper.queryNameByPoints")),
+            @Result(property = "discount",column = "shopping_points",
+                    one = @One(select = "com.example.store.mapper.LevelMapper.queryDiscountByPoints"))
     })
     IPage<User> queryCustomerList(IPage<User> iPage,@Param(Constants.WRAPPER) Wrapper wrapper);
 

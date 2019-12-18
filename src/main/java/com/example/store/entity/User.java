@@ -43,4 +43,6 @@ public class User {
     private BigDecimal shoppingPoints;
     @TableField(exist = false)
     private String levelName;
+    @TableField(exist = false)
+    private String discount;
 }

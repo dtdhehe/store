@@ -65,7 +65,10 @@ public class LevelController {
         List<Level> levelList = levelService.list(queryWrapper);
         Map<String,Object> resultMap = new HashMap<>(16);
         for (Level item : levelList){
-            resultMap.put(item.getLevelName(),item.getLevelPoint());
+            Map<String,Object> itemMap = new HashMap<>(8);
+            itemMap.put("levelPoint",item.getLevelPoint());
+            itemMap.put("discount",item.getDiscount());
+            resultMap.put(item.getLevelName(),itemMap);
         }
         return ResultUtils.success("查询成功",resultMap);
     }

@@ -25,4 +25,12 @@ public interface LevelMapper extends BaseMapper<Level> {
     @Select("select t.level_name from level t where t.valid_flag='1' and t.level_point <= #{points} order by t.level_point desc limit 1")
     String queryNameByPoints(@Param("points") BigDecimal points);
 
+    /**
+     * 根据用户积分查询等级折扣
+     * @param points
+     * @return
+     */
+    @Select("select t.discount from level t where t.valid_flag='1' and t.level_point <= #{points} order by t.level_point desc limit 1")
+    String queryDiscountByPoints(@Param("points") BigDecimal points);
+
 }

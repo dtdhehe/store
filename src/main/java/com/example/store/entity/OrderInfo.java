@@ -11,11 +11,12 @@ import java.math.BigDecimal;
 /**
  * @author 罗蕾
  * @version 1.0.0
- * @date 2019/11/9 17:17
+ * @date 2019/11/14 23:12
  * @description
  **/
 @Data
-public class Goods {
+public class OrderInfo {
+
     @TableId(type = IdType.UUID)
     private String id;
     @TableField(fill = FieldFill.INSERT)
@@ -25,29 +26,16 @@ public class Goods {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateTime;
 
-    private String categoryCode;
-    @TableField(exist = false)
-    private String categoryName;
+    private String orderId;
 
-    private String goodsCode;
+    private String goodsId;
 
     private String goodsName;
 
-    private String goodsUnit;
-
-    private String supplierId;
-    @TableField(exist = false)
-    private String supplierName;
-
-    private BigDecimal goodsBid;
-
     private BigDecimal goodsPrice;
 
-    private BigDecimal goodsPoints;
+    private Integer infoNum;
 
-    private BigDecimal goodsStock;
+    private BigDecimal infoTotal;
 
-    private String goodsStatus;
-    @TableField(exist = false)
-    private boolean edit;
 }

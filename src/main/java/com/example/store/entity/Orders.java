@@ -7,15 +7,17 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author 罗蕾
  * @version 1.0.0
- * @date 2019/11/9 17:17
+ * @date 2019/11/14 23:10
  * @description
  **/
 @Data
-public class Goods {
+public class Orders {
+
     @TableId(type = IdType.UUID)
     private String id;
     @TableField(fill = FieldFill.INSERT)
@@ -25,29 +27,15 @@ public class Goods {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateTime;
 
-    private String categoryCode;
+    private String customerId;
+
+    private String salesId;
+
+    private BigDecimal orderTotal;
+
+    private Integer orderNum;
+
+    private BigDecimal discountTotal;
     @TableField(exist = false)
-    private String categoryName;
-
-    private String goodsCode;
-
-    private String goodsName;
-
-    private String goodsUnit;
-
-    private String supplierId;
-    @TableField(exist = false)
-    private String supplierName;
-
-    private BigDecimal goodsBid;
-
-    private BigDecimal goodsPrice;
-
-    private BigDecimal goodsPoints;
-
-    private BigDecimal goodsStock;
-
-    private String goodsStatus;
-    @TableField(exist = false)
-    private boolean edit;
+    private List<OrderInfo> infoList;
 }
