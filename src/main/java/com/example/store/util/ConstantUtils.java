@@ -23,6 +23,12 @@ public class ConstantUtils {
     public static final String ADMIN = "0";
     public static final String SALES = "1";
     public static final String CUSTOMER = "2";
+    public static final String SALES_AMOUNT = "1";
+    public static final String SALES_USER = "2";
+    public static final String YESTERDAY = "1";
+    public static final String TODAY = "2";
+    public static final String WEEK = "3";
+    public static final String MONTH = "4";
     public static final Map<String,String> ROLE_MAP = new HashMap<>();
     static {
         ROLE_MAP.put(ConstantUtils.ADMIN,"admin");

@@ -3,6 +3,7 @@ package com.example.store.util;
 import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -102,6 +103,70 @@ public class DateUtils {
         String time = currentDate.replace("/","");
         String currentTime = time.replace(" ","");
         return currentTime.replace(":","");
+    }
+
+    /**
+     * 获得昨天日期
+     * @return
+     */
+    public static String getYesterday(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Calendar calendar = Calendar.getInstance();
+        //查询昨天
+        calendar.set(Calendar.DATE,calendar.get(Calendar.DATE) - 1);
+        return sdf.format(calendar.getTime());
+    }
+
+    /**
+     * 获得本周一日期
+     * @return
+     */
+    public static String getMonday(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Calendar calendar = Calendar.getInstance();
+        //以周一为首日
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        //周一
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        return sdf.format(calendar.getTime());
+    }
+
+    /**
+     * 获得本周日日期
+     * @return
+     */
+    public static String getSunday(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Calendar calendar = Calendar.getInstance();
+        //以周一为首日
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        //周日
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        return sdf.format(calendar.getTime());
+    }
+
+    /**
+     * 获得本月第一天日期
+     * @return
+     */
+    public static String getFirstDayOfMonth(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Calendar calendar = Calendar.getInstance();
+        //查询本月
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return sdf.format(calendar.getTime());
+    }
+
+    /**
+     * 获得本月最后一天日期
+     * @return
+     */
+    public static String getEndDayOfMonth(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Calendar calendar = Calendar.getInstance();
+        //查询本月
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return sdf.format(calendar.getTime());
     }
 
 }
