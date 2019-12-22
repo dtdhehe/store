@@ -9,6 +9,8 @@ import com.example.store.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 /**
  * @author 罗蕾
  * @version 1.0.0
@@ -24,5 +26,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
     @Override
     public IPage<User> queryCustomerList(IPage<User> iPage, QueryWrapper<User> wrapper) {
         return userMapper.queryCustomerList(iPage,wrapper);
+    }
+
+    @Override
+    public Map queryAmount(QueryWrapper<Map> queryWrapper) {
+        return userMapper.queryAmount(queryWrapper);
     }
 }

@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.store.entity.User;
 
+import java.util.Map;
+
 /**
  * @author 罗蕾
  * @version 1.0.0
@@ -20,5 +22,12 @@ public interface UserService extends IService<User> {
      * @return
      */
     IPage<User> queryCustomerList(IPage<User> iPage,QueryWrapper<User> wrapper);
+
+    /**
+     * 查询会员数量
+     * @param queryWrapper
+     * @return
+     */
+    Map queryAmount(QueryWrapper<Map> queryWrapper);
 
 }

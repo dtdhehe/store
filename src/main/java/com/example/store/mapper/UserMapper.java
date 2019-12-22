@@ -9,6 +9,7 @@ import com.example.store.entity.User;
 import org.apache.ibatis.annotations.*;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * @author 罗蕾
@@ -35,5 +36,13 @@ public interface UserMapper extends BaseMapper<User> {
                     one = @One(select = "com.example.store.mapper.LevelMapper.queryDiscountByPoints"))
     })
     IPage<User> queryCustomerList(IPage<User> iPage,@Param(Constants.WRAPPER) Wrapper wrapper);
+
+    /**
+     * 查询会员数量
+     * @param wrapper
+     * @return
+     */
+    @Select("SELECT COUNT(id) total FROM user ${ew.customSqlSegment}")
+    Map queryAmount(@Param(Constants.WRAPPER) Wrapper wrapper);
 
 }

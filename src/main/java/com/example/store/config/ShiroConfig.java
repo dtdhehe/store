@@ -42,6 +42,11 @@ public class ShiroConfig {
         map.put("/v2/**", "anon");
         map.put("/swagger-resources/**", "anon");
         //-------swagger接口权限 开放-------
+        //对静态资源放行
+        map.put("/static/css/**","anon");
+        map.put("/static/image/**","anon");
+        map.put("/static/js/**","anon");
+        map.put("/index","anon");
         map.put("/user","anon");
         map.put("/login","anon");
         map.put("/logout","logout");

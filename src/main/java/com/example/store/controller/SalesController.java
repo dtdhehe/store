@@ -3,6 +3,7 @@ package com.example.store.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.store.entity.User;
 import com.example.store.service.OrderService;
+import com.example.store.service.UserService;
 import com.example.store.util.ConstantUtils;
 import com.example.store.util.DateUtils;
 import com.example.store.util.ResultUtils;
@@ -35,6 +36,8 @@ public class SalesController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private UserService userService;
 
     /**
      * 查询销售金额/会员
@@ -53,36 +56,38 @@ public class SalesController {
         if (StringUtils.isEmpty(queryType)){
             return ResultUtils.failed("查询类型不能为空");
         }
-        if (ConstantUtils.SALES_AMOUNT.equals(queryType)){
+        String dateType = (String) queryMap.get("dateType");
+        if (ConstantUtils.YESTERDAY.equals(dateType)){
+            //查询昨天
+            String yesterday = DateUtils.getYesterday();
+            queryWrapper.likeRight("create_time",yesterday);
+        }else if (ConstantUtils.TODAY.equals(dateType)){
+            //查询今天
+            String today = DateUtils.formatDate(new Date(),"yyyyMMdd");
+            queryWrapper.likeRight("create_time",today);
+        }else if (ConstantUtils.WEEK.equals(dateType)){
+            //查询本周
+            //周一
+            String monday = DateUtils.getMonday();
+            queryWrapper.ge("SUBSTR(create_time,1,8)",monday);
+            //周日
+            String sunday = DateUtils.getSunday();
+            queryWrapper.le("SUBSTR(create_time,1,8)",sunday);
+        }else {
+            //查询本月
+            String firstDay = DateUtils.getFirstDayOfMonth();
+            queryWrapper.ge("SUBSTR(create_time,1,8)",firstDay);
+            String lastDay = DateUtils.getEndDayOfMonth();
+            queryWrapper.le("SUBSTR(create_time,1,8)",lastDay);
+        }
+        if (ConstantUtils.SALES_AMOUNT.equals(queryType)) {
             //查询销售金额
             queryWrapper.eq("sales_id",salesUser.getId());
-            String dateType = (String) queryMap.get("dateType");
-            if (ConstantUtils.YESTERDAY.equals(dateType)){
-                //查询昨天
-                String yesterday = DateUtils.getYesterday();
-                queryWrapper.likeRight("create_time",yesterday);
-            }else if (ConstantUtils.TODAY.equals(dateType)){
-                //查询今天
-                String today = DateUtils.formatDate(new Date(),"yyyyMMdd");
-                queryWrapper.likeRight("create_time",today);
-            }else if (ConstantUtils.WEEK.equals(dateType)){
-                //查询本周
-                //周一
-                String monday = DateUtils.getMonday();
-                queryWrapper.ge("SUBSTR(create_time,1,8)",monday);
-                //周日
-                String sunday = DateUtils.getSunday();
-                queryWrapper.le("SUBSTR(create_time,1,8)",sunday);
-            }else {
-                //查询本月
-                String firstDay = DateUtils.getFirstDayOfMonth();
-                queryWrapper.ge("SUBSTR(create_time,1,8)",firstDay);
-                String lastDay = DateUtils.getEndDayOfMonth();
-                queryWrapper.le("SUBSTR(create_time,1,8)",lastDay);
-            }
             resultMap = orderService.queryAmount(queryWrapper);
         }else if (ConstantUtils.SALES_USER.equals(queryType)){
             //查询会员人数
+            queryWrapper.eq("user_type",ConstantUtils.CUSTOMER);
+            resultMap = userService.queryAmount(queryWrapper);
         }
         return ResultUtils.success("查询成功",resultMap);
     }

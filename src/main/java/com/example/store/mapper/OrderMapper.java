@@ -20,7 +20,7 @@ import java.util.Map;
 public interface OrderMapper extends BaseMapper<Orders> {
 
     /**
-     * 查询会员数量或销售额
+     * 查询销售额
      * @param wrapper
      * @return
      */
