@@ -7,6 +7,7 @@ import com.example.store.entity.*;
 import com.example.store.service.GoodsService;
 import com.example.store.service.OrderInfoService;
 import com.example.store.service.OrderService;
+import com.example.store.service.UserService;
 import com.example.store.util.ConstantUtils;
 import com.example.store.util.ResultUtils;
 import com.example.store.vo.ResultVO;
@@ -38,6 +39,8 @@ public class OrderController {
     private GoodsService goodsService;
     @Autowired
     private OrderInfoService orderInfoService;
+    @Autowired
+    private UserService userService;
 
     /**
      * 购买商品
@@ -61,6 +64,8 @@ public class OrderController {
         orderService.save(order);
         //订单总额
         BigDecimal total = new BigDecimal(0);
+        //商品积分
+        BigDecimal points = new BigDecimal(0);
         for (Map item : goodsList){
             OrderInfo info = new OrderInfo();
             info.setOrderId(order.getId());
@@ -79,6 +84,14 @@ public class OrderController {
             info.setInfoTotal(infoTotal);
             orderInfoService.save(info);
             total = total.add(infoTotal);
+            //积分相加
+            points = points.add(goods.getGoodsPoints());
+        }
+        //修改积分
+        if (!StringUtils.isEmpty(customerId)){
+            User customer = userService.getById(customerId);
+            customer.setShoppingPoints(customer.getShoppingPoints().add(points));
+            userService.updateById(customer);
         }
         order.setOrderTotal(total);
         orderService.saveOrUpdate(order);

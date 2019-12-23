@@ -71,17 +71,13 @@ public class CodeUtils {
      */
     public static void main(String[] args) {
         //生成10张13位随机数的条形码
-//        for (int i = 0;i<10;i++){
-//            long num = (long)(Math.random() * (9999999999999L - 1000000000000L)) + 1000000000000L;
-//            String msg = Long.toString(num);
-//            String path = "D:\\uploads\\barcode2\\"+msg+".png";
-//            int width = 105, height = 50;
-//            encode(msg, width, height, path);
-//        }
-//        System.out.println("finished encode.");
-//        String decodeContent = decode("D:\\uploads\\barcode2\\1276694977588.png");
-//        System.out.println("解码内容如下：" + decodeContent);
-//        System.out.println("finished decode.");
+        for (int i = 0;i<10;i++){
+            long num = (long)(Math.random() * (9999999999999L - 1000000000000L)) + 1000000000000L;
+            String msg = Long.toString(num);
+            String path = "D:\\"+msg+".png";
+            int width = 105, height = 50;
+            encode(msg, width, height, path);
+        }
     }
 
 }

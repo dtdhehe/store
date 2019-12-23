@@ -169,4 +169,30 @@ public class DateUtils {
         return sdf.format(calendar.getTime());
     }
 
+    /**
+     * 根据日期偏移几天
+     * @param dateStr
+     * @param dayNum
+     * @return
+     */
+    public static String getOffsetDayFromDate(String dateStr, int dayNum){
+        String offsetDay = "";
+        try {
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            //时间
+            Date date = sdf.parse(dateStr);
+            //需要将date数据转移到Calender对象中操作
+            calendar.setTime(date);
+            //把日期往后增加n天.正数往后推,负数往前移动
+            calendar.add(Calendar.DATE, dayNum);
+            //这个时间就是日期往后推一天的结果
+            date = calendar.getTime();
+            offsetDay = DateUtils.formatDate(date,"yyyyMMdd");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return offsetDay;
+    }
+
 }

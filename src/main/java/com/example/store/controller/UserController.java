@@ -10,6 +10,7 @@ import com.example.store.util.ConstantUtils;
 import com.example.store.util.ResultUtils;
 import com.example.store.vo.ResultVO;
 import io.swagger.annotations.Api;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -79,7 +80,7 @@ public class UserController {
             //密码加密
             user.setPassword(ConstantUtils.getPassword(user.getPassword(),user.getUserName()));
         }
-        return userService.saveOrUpdate(user)?ResultUtils.success("修改用户成功"):ResultUtils.failed("修改失败");
+        return userService.updateById(user)?ResultUtils.success("修改用户成功"):ResultUtils.failed("修改失败");
     }
 
     /**
@@ -163,6 +164,11 @@ public class UserController {
         return ResultUtils.success("查询成功",resultMap);
     }
 
+    /**
+     * 购买商品时根据手机号码查询会员
+     * @param phone
+     * @return
+     */
     @GetMapping("/{phone}")
     public ResultVO getByPhone(@PathVariable("phone")String phone){
         if (StringUtils.isEmpty(phone)){
@@ -179,6 +185,16 @@ public class UserController {
             return ResultUtils.failed("账户不存在或已冻结");
         }
         return ResultUtils.success("查询成功",userList.get(0));
+    }
+
+    /**
+     * 获得当前登录用户
+     * @return
+     */
+    @GetMapping("/currentUser")
+    public ResultVO getCurrentUser(){
+        User user = (User)SecurityUtils.getSubject().getPrincipal();
+        return ResultUtils.success("查询成功",user);
     }
 
 }
