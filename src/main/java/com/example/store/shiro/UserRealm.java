@@ -33,13 +33,12 @@ public class UserRealm extends AuthorizingRealm {
         System.out.println("进行授权");
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         User user = (User) principalCollection.getPrimaryPrincipal();
-//        //授权
-//        Set<String> roles =new HashSet<>();
-//        List<Role> roleList = user.getRoleList();
-//        for (Role role : roleList){
-//            roles.add(role.getRoleName());
-//        }
-//        authorizationInfo.setRoles(roles);
+        //授权
+        if (ConstantUtils.ADMIN.equals(user.getUserType())){
+            authorizationInfo.addRole("admin");
+        }else if (ConstantUtils.SALES.equals(user.getUserType())){
+            authorizationInfo.addRole("sales");
+        }
         return authorizationInfo;
     }
 

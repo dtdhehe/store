@@ -39,7 +39,7 @@ public class LoginController {
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUserName(),user.getPassword());
         try {
             subject.login(token);
-            return ResultUtils.success("login");
+            return ResultUtils.success("login",subject.getPrincipal());
         }catch (UnknownAccountException e){
             e.printStackTrace();
             return ResultUtils.failed("用户名不存在");
